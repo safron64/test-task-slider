@@ -2,6 +2,7 @@
   "name": "test-task-slider",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://safron64.github.io/test-task-slider/",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -42,6 +43,6 @@
   },
   "devDependencies": {
     "gh-pages": "^6.1.1",
-    "homepage": "https://github.com/safron64/test-task-slider.git"
+    "homepage": "https://safron64.github.io/test-task-slider/"
   }
 }
