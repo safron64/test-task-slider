@@ -1,83 +1,83 @@
-import React, { useState, useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
+import { observer } from 'mobx-react-lite'
+import { cardStore } from '../../stores/cardStore'
 import { AddElementBtn, SliderContainer, SliderWrapper } from './Slider.styles'
 import Card from '../Card/Card'
 import BaseCard from '../BaseCard/BaseCard'
 import SliderControls from './SliderControls'
+import {
+	handleAddCard,
+	handleDeleteCard,
+	handleDeleteBaseCard,
+	handleSetBaseCard,
+	handleNext,
+	handlePrev,
+} from '../../utils/cardActions'
 
-const Slider = () => {
-	const [cards, setCards] = useState([])
-	const [baseCard, setBaseCard] = useState(null)
-	const [currentIndex, setCurrentIndex] = useState(0)
+const Slider = observer(() => {
 	const sliderRef = useRef(null)
 
-	const handleAddCard = () => {
-		const newCard = { id: Date.now(), value: `Card ${cards.length + 1}` }
-		setCards([...cards, newCard])
-	}
+	useEffect(() => {
+		const handleResize = () => {
+			const sliderWidth = sliderRef.current.clientWidth
+			const cardWidth = 220 // предполагаемая ширина карточки
+			const visibleCardsCount = Math.floor(sliderWidth / cardWidth)
 
-	const handleDeleteCard = id => {
-		setCards(cards.filter(card => card.id !== id))
-	}
-
-	const handleDeleteBaseCard = () => {
-		setBaseCard(null)
-	}
-
-	const handleSetBaseCard = id => {
-		const baseCard = cards.find(card => card.id === id)
-		setBaseCard(baseCard)
-		setCards(cards.filter(card => card.id !== id))
-	}
-
-	const handleNext = () => {
-		if (currentIndex < cards.length) {
-			setCurrentIndex(currentIndex + 1)
+			cardStore.setShowControls(
+				cardStore.cards.length > visibleCardsCount
+			)
 		}
-	}
 
-	const handlePrev = () => {
-		if (currentIndex > 0) {
-			setCurrentIndex(currentIndex - 1)
-		}
-	}
+		window.addEventListener('resize', handleResize)
+		handleResize()
+
+		return () => window.removeEventListener('resize', handleResize)
+	}, [cardStore.cards.length])
 
 	return (
 		<div>
-			<AddElementBtn onClick={handleAddCard}>+ elem</AddElementBtn>
+			<AddElementBtn onClick={handleAddCard} className="mb-3">
+				+ elem
+			</AddElementBtn>
 			<SliderContainer>
 				<SliderWrapper
 					style={{
-						transform: `translateX(-${currentIndex * 220}px)`,
+						transform: `translateX(-${
+							cardStore.currentIndex * 220
+						}px)`,
+						transition: 'transform 0.3s ease-in-out',
 					}}
 					ref={sliderRef}
 				>
-					{baseCard && (
+					{cardStore.baseCard && (
 						<BaseCard
-							value={baseCard.value}
+							value={cardStore.baseCard.value}
 							onDelete={handleDeleteBaseCard}
 						/>
 					)}
-					{cards.map(card => (
+					{cardStore.cards.map(card => (
 						<Card
 							key={card.id}
 							id={card.id}
 							value={card.value}
-							onDelete={handleDeleteCard}
-							onSetBase={handleSetBaseCard}
+							onDelete={() => handleDeleteCard(card.id)}
+							onSetBase={() => handleSetBaseCard(card.id)}
 						/>
 					))}
 				</SliderWrapper>
-				<SliderControls
-					onPrev={handlePrev}
-					onNext={handleNext}
-					showPrev={currentIndex > 0}
-					showNext={
-						currentIndex < cards.length + (baseCard ? 0 : 1) - 1
-					}
-				/>
+				{cardStore.showControls && (
+					<SliderControls
+						onPrev={handlePrev}
+						onNext={handleNext}
+						showPrev={cardStore.currentIndex > 0}
+						showNext={
+							cardStore.currentIndex < cardStore.cards.length - 1
+						}
+					/>
+				)}
 			</SliderContainer>
 		</div>
 	)
-}
+})
 
 export default Slider

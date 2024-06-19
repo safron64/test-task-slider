@@ -8,6 +8,8 @@ export const BaseCardContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	width: 200px;
+	max-width: 300px;
 `
 
 export const Button = styled.button`

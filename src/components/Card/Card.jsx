@@ -4,7 +4,7 @@ import { CardContainer, Button, Flex } from './Card.styles'
 const Card = ({ id, value, onDelete, onSetBase }) => {
 	return (
 		<CardContainer>
-			<h3>{value}</h3>
+			<p>{value}</p>
 			<Flex>
 				<Button onClick={() => onDelete(id)}>DEL</Button>
 				<Button onClick={() => onSetBase(id)}>BASE</Button>

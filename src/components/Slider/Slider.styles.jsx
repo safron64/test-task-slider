@@ -10,6 +10,7 @@ export const SliderContainer = styled.div`
 export const SliderWrapper = styled.div`
 	display: flex;
 	transition: transform 0.3s ease;
+	padding: 10px;
 `
 
 export const AddElementBtn = styled.button`
@@ -19,5 +20,5 @@ export const AddElementBtn = styled.button`
 	cursor: pointer;
 	text-align: start;
 	color: #fff;
-	background-color: #000
+	background-color: #413f3f;
 `
